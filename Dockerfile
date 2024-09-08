@@ -9,9 +9,11 @@ RUN apt-get update && apt-get install -y \
     xclip \
     && rm -rf /var/lib/apt/lists/*
 
-COPY . .
+COPY requirements.txt .
 
 RUN pip3 install -r requirements.txt
+
+COPY . .
 
 EXPOSE 80
 
