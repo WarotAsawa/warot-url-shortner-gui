@@ -74,7 +74,7 @@ if st.session_state['authentication_status']:
         newOriginal = st.text_input('Origin URL:', 'https://example.com')
         st.form_submit_button('   CREATE NEW SHORT   ', on_click=putItem, args=[tableName, {'url': newShort, 'redirect': newOriginal}])
 
-    st.title('Manage your URL List:')
+    st.header('Manage your URL List:',divider="green")
     UpdateAllURL(tableName)
     #print(st.session_state['allURL'] )
     items = st.session_state['allURL'];
@@ -85,9 +85,9 @@ if st.session_state['authentication_status']:
             urlCol.markdown("### URL: :green[**" + item['url']+ '**]')
             urlCol.write("Redirect: " + item['redirect'])
             fullURL = "http://short.warot.dev/"+item['url']
-            if deleteCol.button("Copy",key='copy'+item['url'], type="secondary"):
-                pyperclip.copy(fullURL)
-                st.toast('URL: ' + fullURL + " added to your clipboard.", icon='🎉')
+            #if deleteCol.button("Copy",key='copy'+item['url'], type="secondary"):
+            #    pyperclip.copy(fullURL)
+            #    st.toast('URL: ' + fullURL + " added to your clipboard.", icon='🎉')
             if deleteCol.button("Delete",key='delete'+item['url'], type="primary"):
                 deleteItem(tableName, item['url'])
                 UpdateAllURL(tableName)
