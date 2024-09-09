@@ -5,13 +5,12 @@ import boto3
 from botocore.exceptions import ClientError
 import yaml
 from yaml.loader import SafeLoader
-import pyperclip
+#import pyperclip
 from time import sleep
-
 st.session_state['allURL'] = []
 st.session_state['newURL'] = ''
 st.session_state['newRedirect'] = ''
-
+st.set_page_config(page_title="WAROT SHORTENNER")
 tableName = 'warot-short-url-table'
 # A function using Boto3 to scan DynamoDB Table returned as list of items
 def scanDynamoDB(tableName):
@@ -72,8 +71,11 @@ if st.session_state['authentication_status']:
         #randURL = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(10))
         newShort = st.text_input('Short URL:', 'your-new-url')
         newOriginal = st.text_input('Origin URL:', 'https://example.com')
-        st.form_submit_button('   CREATE NEW SHORT   ', on_click=putItem, args=[tableName, {'url': newShort, 'redirect': newOriginal}])
-
+        submitButton = st.form_submit_button('   CREATE NEW SHORT   ')
+        if submitButton:
+            if putItem(tableName, {'url': newShort, 'redirect': newOriginal}):
+                st.toast('Successfully added URL: \n- URL: :green[' + newShort + "] created successfully.", icon='📄')
+               
     st.header('Manage your URL List:',divider="green")
     UpdateAllURL(tableName)
     #print(st.session_state['allURL'] )
@@ -81,10 +83,11 @@ if st.session_state['authentication_status']:
     for item in items:
         container = st.container(border=True)
         with container:
+            fullURL = "http://short.warot.dev/"+item['url']
             urlCol, deleteCol = st.columns([6, 1])
             urlCol.markdown("### URL: :green[**" + item['url']+ '**]')
+            urlCol.code(fullURL)
             urlCol.write("Redirect: " + item['redirect'])
-            fullURL = "http://short.warot.dev/"+item['url']
             #if deleteCol.button("Copy",key='copy'+item['url'], type="secondary"):
             #    pyperclip.copy(fullURL)
             #    st.toast('URL: ' + fullURL + " added to your clipboard.", icon='🎉')
@@ -93,6 +96,7 @@ if st.session_state['authentication_status']:
                 UpdateAllURL(tableName)
                 st.toast('URL: ' + fullURL + " deleted successfully.", icon='❌')
                 sleep(0.5)
+                #Refresh
                 st.experimental_rerun()
 
 elif st.session_state['authentication_status'] is False:
