@@ -5,13 +5,24 @@ import boto3
 from botocore.exceptions import ClientError
 import yaml
 from yaml.loader import SafeLoader
+import qrcode
+import qrcode.image.svg
+
 #import pyperclip
 from time import sleep
 st.session_state['allURL'] = []
 st.session_state['newURL'] = ''
 st.session_state['newRedirect'] = ''
 st.set_page_config(page_title="WAROT SHORTENNER")
+bucketName = 'warot-shorten-qr-collection'
 tableName = 'warot-short-url-table'
+
+# Gen SVG QR Code
+def CreateQRSVG(url):
+    factory = qrcode.image.svg.SvgImage
+    img = qrcode.make(str(url), image_factory=factory)
+    print(img)
+    return img;
 # A function using Boto3 to scan DynamoDB Table returned as list of items
 def scanDynamoDB(tableName):
     dynamodb = boto3.resource('dynamodb', region_name='ap-southeast-1')
@@ -31,6 +42,8 @@ def putItem(tableName, item):
     table.put_item(
         Item=item
     )
+    print(CreateQRSVG(item['url']))
+
     UpdateAllURL(tableName)
     return True;
 
