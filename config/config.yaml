@@ -1,0 +1,5 @@
+qrBucketName: 'warot-shorten-qr-collection'
+qrBucketPrefix: 'img'
+shortDomainName: "http://short.warot.dev/"
+tableName: 'warot-short-url-table'
+region: 'ap-southeast-1'
