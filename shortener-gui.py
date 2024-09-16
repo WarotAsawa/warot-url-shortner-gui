@@ -22,7 +22,7 @@ tableName = config['tableName']
 st.session_state['allURL'] = []
 st.session_state['newURL'] = ''
 st.session_state['newRedirect'] = ''
-st.set_page_config(page_title="WAROT SHORTENNER")
+st.set_page_config(page_title="WAROT SHORTENNER", page_icon='./short.svg')
 
 def PutObjectToS3(itemName, bucketName , S3Path, ContentType):
     s3 = boto3.client('s3')
@@ -39,7 +39,7 @@ def PutObjectToS3(itemName, bucketName , S3Path, ContentType):
 def GetObjectFromS3(itemName, bucketName, S3Path):
     s3 = boto3.client('s3')
     try:
-        print("Downling File Name:",itemName, " To Bucket Name : ", bucketName, " with path : ", S3Path)
+        print("Downloading File Name:",itemName, " To Bucket Name : ", bucketName, " with path : ", S3Path)
         s3.download_file(bucketName, S3Path, itemName)
     except ClientError as e:
         print(e)
